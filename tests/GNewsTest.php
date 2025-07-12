@@ -1,10 +1,10 @@
 <?php
 
-namespace GNews\GNewsPhp\Tests;
+namespace GNews\Tests;
 
-use GNews\GNewsPhp\Article;
-use GNews\GNewsPhp\GNews;
-use GNews\GNewsPhp\GNewsException;
+use GNews\Article;
+use GNews\GNews;
+use GNews\GNewsException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -28,7 +28,7 @@ class GNewsTest extends TestCase
 
         $this->gnews = new GNews(self::API_KEY);
 
-        // Injecter le client HTTP mocké dans l'instance GNews
+        // Injects the mocked HTTP client into the GNews instance.
         $reflectionClass = new ReflectionClass(GNews::class);
         $property = $reflectionClass->getProperty('httpClient');
         $property->setAccessible(true);
@@ -76,7 +76,7 @@ class GNewsTest extends TestCase
      * @throws GNewsException
      * @throws JsonException
      */
-    public function testGetHeadlines(): void
+    public function testGetTopHeadlines(): void
     {
         $responseData = [
             'totalArticles' => 2,
@@ -90,7 +90,7 @@ class GNewsTest extends TestCase
             new Response(200, [], json_encode($responseData, JSON_THROW_ON_ERROR))
         );
 
-        $result = $this->gnews->headlines(['country' => 'fr']);
+        $result = $this->gnews->getTopHeadlines(['country' => 'fr']);
 
         $this->assertEquals(2, $result->getTotalArticles());
         $this->assertCount(2, $result);
@@ -115,7 +115,7 @@ class GNewsTest extends TestCase
         $this->expectException(GNewsException::class);
         $this->expectExceptionMessage('API rate limit exceeded');
 
-        $this->gnews->headlines();
+        $this->gnews->getTopHeadlines();
     }
 
     /**
@@ -148,7 +148,7 @@ class GNewsTest extends TestCase
     /**
      * @throws GNewsException
      */
-    public function testRealGetHeadlines(): void
+    public function testRealGetTopHeadlines(): void
     {
         $apiKey = self::API_KEY;
 
@@ -158,7 +158,7 @@ class GNewsTest extends TestCase
 
         $gnews = new GNews($apiKey);
 
-        $result = $gnews->headlines(['country' => 'fr', 'max' => 3]);
+        $result = $gnews->getTopHeadlines(['country' => 'fr', 'max' => 3]);
 
         $this->assertIsInt($result->getTotalArticles());
 

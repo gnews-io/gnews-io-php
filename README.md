@@ -17,12 +17,12 @@ composer require gnews-io/gnews-io-php
 ### Quick Examples
 
 ```php
-$gnews = new Gnews('YOUR_API_KEY');
+$client = new \GNews\GNews('YOUR_API_KEY');
 
-$searchResults = $gnews->searchArticles('bitcoin');
-$headlines = $gnews->getHeadlines(['category' => 'technology']);
+$articles = client->searchArticles('bitcoin');
+// $articles = client->getTopHeadlines(['category' => 'technology']);
 
-foreach ($searchResults as $article) {
+foreach ($articles as $article) {
     echo $article->getTitle() . "\n";
     echo $article->getSourceName() . "\n";
     echo $article->getUrl() . "\n";
@@ -36,40 +36,40 @@ foreach ($searchResults as $article) {
 Search for articles with a specific query.
 
 ```php
-$gnews = new Gnews('YOUR_API_KEY');
+$client = new \GNews\GNews('YOUR_API_KEY');
 
-$results = $gnews->search('bitcoin', [
+$articles = client->search('bitcoin', [
     'lang' => 'en',
     'country' => 'us',
     'max' => 10,
-    'in' => 'title,description',  // Where to search (title,description,content)
-    'nullable' => null, // Specify the attributes that you allow to return null values
-    'sortby' => 'publishedAt',  // or 'relevance'
+    'in' => 'title,description',      // Where to search (title, description, content)
+    'nullable' => null,               // Specify the attributes that you allow to return null values
+    'sortby' => 'publishedAt',        // or 'relevance'
     'from' => '2025-01-01T00:00:00Z',
     'to' => '2025-01-31T23:59:59Z',
-    'page' => 1, // Paid plan only
-    'expand' => 'content', // Paid plan only : get the full content of the article
+    'page' => 1,                      // Paid plan only
+    'expand' => 'content',            // Paid plan only : get the full content of the article
 ]);
 ```
 
-### Headlines
+### Get Top Headlines
 
 Get top headlines, optionally filtered by category.
 
 ```php
-$gnews = new Gnews('YOUR_API_KEY');
+$gnews = new \GNews\GNews('YOUR_API_KEY');
 
-$headlines = $gnews->headlines([
-    'category' => 'technology',  // Optional: general, world, nation, business, technology, entertainment, sports, science, health
+$articles = $gnews->getTopHeadlines([
+    'category' => 'technology',       // Optional: general, world, nation, business, technology, entertainment, sports, science, health
     'lang' => 'en',
     'country' => 'us',
     'max' => 10,
-    'nullable' => '', // Specify the attributes that you allow to return null values
+    'nullable' => '',                 // Specify the attributes that you allow to return null values
     'from' => '2025-01-01T00:00:00Z',
     'to' => '2025-01-31T23:59:59Z',
     'q' => 'bitcoin',
-    'page' => 1, // Paid plan only
-    'expand' => 'content', // Paid plan only : get the full content of the article
+    'page' => 1,                      // Paid plan only
+    'expand' => 'content',            // Paid plan only : get the full content of the article
 ]);
 
 ```
@@ -81,13 +81,13 @@ $headlines = $gnews->headlines([
 | `lang`     | string  | Language of the articles (two-letter ISO 639-1 code)                              |
 | `country`  | string  | Country of the articles (two-letter ISO 3166-1 code)                              |
 | `max`      | integer | Maximum number of articles to return (1-100)                                      |
-| `category` | string  | Category of the articles (headlines only)                                         |
+| `category` | string  | Category of the articles (top headlines only)                                     |
 | `sortby`   | string  | Sorting method: 'publishedAt' or 'relevance' (search only)                        |
 | `from`     | string  | Start date for search (ISO 8601 format, search only)                              |
 | `to`       | string  | End date for search (ISO 8601 format, search only)                                |
 | `in`       | string  | Where to search: 'title', 'description', 'content' or a combination (search only) |
 | `nullable` | boolean | Whether to include null values in the query params                                |
-| `page`     | int     | Control the pagination of the results                                             |
+| `page`     | int     | Control the pagination of the results (paid plan only)                            |
 | `expand`   | boolean | Whether to get full article content (paid plan only)                              |
 
 ## Response Format
@@ -101,8 +101,8 @@ All API methods return promises that resolve to objects with the following struc
 | `getTotalArticles()` | Returns the total number of available articles   |
 | `getArticles()`      | Returns an array of `Article` objects            |
 | `count()`            | Returns the number of articles in the collection |
-| Array access         | You can access articles with `$results[0]`       |
-| Iteration            | You can use `foreach($results as $article)`      |
+| Array access         | You can access articles with `$articles[0]`      |
+| Iteration            | You can use `foreach($articles as $article)`     |
 
 ### Article
 
@@ -121,6 +121,7 @@ All API methods return promises that resolve to objects with the following struc
 ## Error Handling
 
 The library throws errors in the following cases:
+
 - Missing API key during initialization
 - Network errors
 - API request timeouts

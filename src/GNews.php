@@ -1,6 +1,6 @@
 <?php
 
-namespace GNews\GNewsPhp;
+namespace GNews;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -77,7 +77,7 @@ class GNews
      * @return ArticleCollection Headlines
      * @throws GNewsException If the API request fails
      */
-    public function headlines(array $params = []): ArticleCollection
+    public function getTopHeadlines(array $params = []): ArticleCollection
     {
         $requestParams = $this->prepareParams($params);
 
@@ -97,7 +97,7 @@ class GNews
 
         // Optional parameters that can be passed directly
         $optionalParams = [
-            'lang','country', 'max', 'category', 'sortby', 'from', 'to', 'in', 'nullable', 'page', 'expand'
+            'lang', 'country', 'max', 'category', 'sortby', 'from', 'to', 'in', 'nullable', 'page', 'expand'
         ];
 
         foreach ($optionalParams as $param) {
@@ -119,7 +119,7 @@ class GNews
      */
     protected function makeRequest(string $endpoint, array $params = []): array
     {
-        $url = $this->baseUrl. $this->version . $endpoint;
+        $url = $this->baseUrl . $this->version . $endpoint;
 
         try {
             $response = $this->httpClient->request('GET', $url, [

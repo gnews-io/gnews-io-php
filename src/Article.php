@@ -1,6 +1,6 @@
 <?php
 
-namespace GNews\GNewsPhp;
+namespace GNews;
 
 class Article
 {
