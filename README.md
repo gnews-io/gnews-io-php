@@ -17,10 +17,13 @@ composer require gnews-io/gnews-io-php
 ### Quick Examples
 
 ```php
+<?php
+require_once 'vendor/autoload.php';
+
 $client = new \GNews\GNews('YOUR_API_KEY');
 
-$articles = client->searchArticles('bitcoin');
-// $articles = client->getTopHeadlines(['category' => 'technology']);
+$articles = $client->search('bitcoin');
+// $articles = $client->getTopHeadlines(['category' => 'technology']);
 
 foreach ($articles as $article) {
     echo $article->getTitle() . "\n";
@@ -38,7 +41,7 @@ Search for articles with a specific query.
 ```php
 $client = new \GNews\GNews('YOUR_API_KEY');
 
-$articles = client->search('bitcoin', [
+$articles = $client->search('bitcoin', [
     'lang' => 'en',
     'country' => 'us',
     'max' => 10,
@@ -57,9 +60,9 @@ $articles = client->search('bitcoin', [
 Get top headlines, optionally filtered by category.
 
 ```php
-$gnews = new \GNews\GNews('YOUR_API_KEY');
+$client = new \GNews\GNews('YOUR_API_KEY');
 
-$articles = $gnews->getTopHeadlines([
+$articles = $client->getTopHeadlines([
     'category' => 'technology',       // Optional: general, world, nation, business, technology, entertainment, sports, science, health
     'lang' => 'en',
     'country' => 'us',
